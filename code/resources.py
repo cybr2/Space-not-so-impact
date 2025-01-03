@@ -9,6 +9,7 @@ def load_resources():
         "meteor": pygame.image.load(join('images', 'meteor.png')).convert_alpha(),
         "player": pygame.image.load(join('images', 'player.png')).convert_alpha(),
         "explosion": [pygame.image.load(join('images', 'explosion', f'{i}.png')).convert_alpha() for i in range(21)],
+        "enemy": pygame.image.load(join('images', 'enemy.png')).convert_alpha(), 
         # text
         "font": join('images', 'Oxanium-Bold.ttf'),
         ""

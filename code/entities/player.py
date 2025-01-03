@@ -20,6 +20,8 @@ class Player(pygame.sprite.Sprite):
         self.resources = resources
         self.all_sprites = all_sprites
         self.laser_sprites = laser_sprite
+        self.owner = "player"
+        
 
     def laser_time(self):
         if not self.can_shoot:
@@ -45,7 +47,7 @@ class Player(pygame.sprite.Sprite):
             self.rect.bottom = WINDOW_HEIGHT
 
         if (pygame.mouse.get_pressed()[0] or keys[pygame.K_SPACE]) and self.can_shoot:
-            Laser(self.resources, self.rect.midtop, (self.all_sprites, self.laser_sprites)) 
+            Laser(self.resources, self.rect.midtop, self.owner, (self.all_sprites, self.laser_sprites)) 
             self.can_shoot = False
             self.laser_shoot_time = pygame.time.get_ticks()
             self.resources["laser_sound"].play()

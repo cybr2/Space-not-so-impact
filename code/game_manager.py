@@ -6,6 +6,7 @@ from entities.meteor import Meteor
 from entities.star import Star
 from utils.collisions import collision
 from utils.display_score import display_score
+from entities.enemy import Enemy
 
 
 class GameManager:
@@ -20,6 +21,7 @@ class GameManager:
         self.all_sprites = pygame.sprite.Group()
         self.meteor_sprites = pygame.sprite.Group()
         self.laser_sprites = pygame.sprite.Group()
+        self.enemy_sprites = pygame.sprite.Group()
         self.score = 0
         self.dt = self.clock.tick(60) / 1000
 
@@ -32,6 +34,9 @@ class GameManager:
         #create meteor spawn event
         self.meteor_event = pygame.event.custom_type()
         pygame.time.set_timer(self.meteor_event, 500)
+
+        self.enemy_event = pygame.event.custom_type()
+        pygame.time.set_timer(self.enemy_event, 3000) 
     
     def reset_game(self):
         # Reset the score
@@ -40,6 +45,8 @@ class GameManager:
         # Reset the player's position
         self.player.rect.midbottom = (WINDOW_WIDTH // 2, WINDOW_HEIGHT - 10)
 
+        self.player.rect.midbottom = (WINDOW_WIDTH // 2, WINDOW_HEIGHT / 2 - 50)
+
         # Reset any other player properties (e.g., health, if applicable)
         # Example: self.player.health = self.player.max_health
 
@@ -47,6 +54,7 @@ class GameManager:
         self.all_sprites.empty()
         self.meteor_sprites.empty()
         self.laser_sprites.empty()
+        self.enemy_sprites.empty()
 
         # Recreate the stars and other entities
         for _ in range(20):
@@ -57,6 +65,8 @@ class GameManager:
 
         # Reset the meteor spawn timer
         pygame.time.set_timer(self.meteor_event, 500)
+        # Reset the enemy spawn timer
+        # pygame.time.set_timer(self.enemy_event, 500)
 
         # Optionally, reset other game logic (like power-ups, level, etc.)
 
@@ -91,7 +101,7 @@ class GameManager:
             self.screen.fill((0, 0, 0))
 
             # Render title
-            text_surf = self.title_font.render("Space Shooter", True, 'white')
+            text_surf = self.title_font.render("Space Not So Impact", True, 'white')
             text_rect = text_surf.get_rect(center=(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2 - 50))
             self.screen.blit(text_surf, text_rect)
 
@@ -130,7 +140,11 @@ class GameManager:
                 elif event.type == self.meteor_event:
                     x,y = randint(0, WINDOW_WIDTH), randint(-200, -100)
                     Meteor(self.resources, (x,y), (self.all_sprites, self.meteor_sprites))
-            
+                elif event.type == self.enemy_event:
+                    # Randomize spawn position
+                    x,y = randint(0, WINDOW_WIDTH - 20), randint(-100, 10)  # Ensure enemy stays within screen bounds
+                    Enemy(self.resources,self.all_sprites, (x,y),self.laser_sprites, (self.all_sprites , self.enemy_sprites))
+
             self.score = (pygame.time.get_ticks() - start_time) // 1000
 
             # Clear the screen
@@ -143,6 +157,7 @@ class GameManager:
                 self.meteor_sprites, 
                 self.laser_sprites, 
                 self.all_sprites, 
+                self.enemy_sprites,
                 game_active,
             )
 
